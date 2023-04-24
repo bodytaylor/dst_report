@@ -1,10 +1,12 @@
 import pandas as pd
 import glob
-from get_file_from_bucket import quarter, year
+
 import os.path
+from get_time_data import year, quarter
+
 
 # setting the path for joining multiple files
-files = os.path.join("*dst_revenue.csv")
+files = os.path.join(f"data/{quarter}/*dst_revenue.csv")
 
 # list of merged files returned
 files = glob.glob(files)
@@ -36,6 +38,12 @@ df_report['Package'] = df_report['Debit'].apply(get_package)
 
 
 # Save the dataframe to an Excel file
-writer = pd.ExcelWriter(f'{year}_q{quarter}_dst_report.xlsx')
+directory = f"output/q{quarter}/"
+filename = f"{year}_q{quarter}_dst_report.xlsx"
+file_path = os.path.join(directory, filename)
+if not os.path.exists(directory):
+    os.makedirs(directory)
+
+writer = pd.ExcelWriter(f'{directory}{year}_q{quarter}_dst_report.xlsx')
 df_report.to_excel(writer, index=False)
-writer.save()
+writer._save()

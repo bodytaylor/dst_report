@@ -1,11 +1,7 @@
 from datetime import date
 from google.cloud import storage
 import os.path
-
-# Get date time infomation
-today = date.today()
-year = today.year
-quarter = (today.month - 1) // 3 + 1
+from get_time_data import year, quarter
 
 os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = "credentials/dstreportdata-48acf2cbeed0.json"
 
@@ -26,8 +22,12 @@ storage_client = storage.Client()
 # Create a bucket object for our bucket
 bucket = storage_client.get_bucket("dst_datalake")
 
+directory = f"data/q{quarter}/"
+if not os.path.exists(directory):
+    os.makedirs(directory)
+
 for item in get_file_list(year, quarter):
     # Create a blob object from the filepath
     blob = bucket.blob(f"{item}")
     # Download the file to a destination
-    blob.download_to_filename(f"{item[17:]}")
+    blob.download_to_filename(f"{directory}{item[17:]}")

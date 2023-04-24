@@ -4,10 +4,11 @@ from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
-
+from get_time_data import today, year
 from google.cloud import storage
 import base64
-from datetime import date
+
+
 
 # If modifying these scopes, delete the file token.json.
 SCOPES = ['https://www.googleapis.com/auth/gmail.readonly']
@@ -62,9 +63,6 @@ def write_to_blob():
     client = storage.Client()
     # Select bucket to upload file.
     bucket = storage.Bucket(client, 'dst_datalake')
-    # Get date, year data
-    today = date.today()
-    year = str(today.year)
     # File name by generated date.
     filename = (str(today) + "_dst_revenue.csv")
     # Create blob with file path to upload.
